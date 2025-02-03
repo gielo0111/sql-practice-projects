@@ -3,7 +3,6 @@ from pandasql import sqldf
 import billionaire.queries as queries
 import billionaire.problems as problems
 import streamlit as st
-import uuid
 
 df = pd.read_csv("billionaire/billionaire.csv")
 st.set_page_config(layout="wide")
