@@ -44,6 +44,14 @@ st.markdown(
             border-radius: 8px;
         }
     </style>
+    <script>
+        function closeSidebar() {
+            var sidebar = window.parent.document.querySelector('section[data-testid="stSidebar"]');
+            if (sidebar) {
+                sidebar.style.display = 'none';
+            }
+        }
+    </script>
     """,
     unsafe_allow_html=True
 )
@@ -56,8 +64,9 @@ if "place" not in st.session_state:
     st.session_state["place"] = queries.DROPDOWN_QUERY[0]
 
 def update_selection():
-    """Update session state when selectbox value changes."""
+    """Update session state when selectbox value changes & close sidebar."""
     st.session_state["place"] = st.session_state["query_select"]
+    st.markdown('<script>closeSidebar();</script>', unsafe_allow_html=True)  # Auto-hide sidebar
 
 # Sidebar Navigation
 with st.sidebar:
