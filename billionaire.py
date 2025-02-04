@@ -50,7 +50,7 @@ st.markdown(
         }
 
         .stSelectbox:hover {
-            background-color: #FF1493; /* Pink on hover */
+            background-color: #555;
         }
 
         /* Code Block Styling */
