@@ -11,7 +11,7 @@ st.set_page_config(
     page_icon=":bar_chart:"
 )
 
-# Dark mode & UI Styling
+# Dark mode & UI Styling with Pink Accents
 st.markdown(
     """
     <style>
@@ -36,7 +36,7 @@ st.markdown(
 
         /* Dropdown Styling */
         .stSelectbox label {
-            color: #FF8C00 !important;
+            color: #FF1493 !important; /* Pink color */
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 15px;
@@ -50,7 +50,7 @@ st.markdown(
         }
 
         .stSelectbox:hover {
-            background-color: #555;
+            background-color: #FF1493; /* Pink on hover */
         }
 
         /* Code Block Styling */
@@ -60,7 +60,7 @@ st.markdown(
             font-size: 14px;
             padding: 20px;
             border: 1px solid #444;
-            color: #F4A261;
+            color: #FF1493; /* Pink code block */
         }
 
         /* SQL Container Styling */
@@ -73,7 +73,7 @@ st.markdown(
         }
 
         .sql-container:hover {
-            box-shadow: 0px 12px 30px rgba(255, 102, 0, 0.5);
+            box-shadow: 0px 12px 30px rgba(255, 20, 147, 0.5); /* Lighter pink on hover */
         }
 
         .stDataFrame {
@@ -83,7 +83,7 @@ st.markdown(
 
         /* Title Styling */
         .stTitle {
-            color: #FF8C00;
+            color: #FF1493;
             font-weight: 700;
             font-size: 36px;
             text-align: center;
@@ -92,7 +92,7 @@ st.markdown(
 
         /* Subtitle Styling */
         .stSubheader {
-            color: #FFB84C !important;
+            color: #FF1493 !important;
             font-size: 24px;
             padding-bottom: 10px;
         }
