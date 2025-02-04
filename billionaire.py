@@ -4,8 +4,29 @@ import billionaire.queries as queries
 import billionaire.problems as problems
 import streamlit as st
 
+# Force dark theme
+st.set_page_config(layout="wide", page_title="SQL Projects", page_icon=":bar_chart:")
+
+# Set dark mode in the app
+st.markdown(
+    """
+    <style>
+        body {
+            background-color: #0e1117;
+            color: white;
+        }
+        div[data-testid="stAppViewContainer"] {
+            background-color: #0e1117;
+        }
+        div[data-testid="stSidebar"] {
+            background-color: #161a23;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 df = pd.read_csv("billionaire/billionaire.csv")
-st.set_page_config(layout="wide")
 
 # Initialize session state properly
 if "place" not in st.session_state:
