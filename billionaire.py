@@ -4,10 +4,14 @@ import billionaire.queries as queries
 import billionaire.problems as problems
 import streamlit as st
 
-# Force dark theme
-st.set_page_config(layout="wide", page_title="SQL Projects", page_icon=":bar_chart:")
+# Set up the page
+st.set_page_config(
+    layout="wide",
+    page_title="SQL Projects Compilation",
+    page_icon=":bar_chart:"
+)
 
-# Set dark mode in the app
+# Dark mode & UI Styling
 st.markdown(
     """
     <style>
@@ -17,18 +21,37 @@ st.markdown(
         }
         div[data-testid="stAppViewContainer"] {
             background-color: #0e1117;
+            padding: 20px;
         }
         div[data-testid="stSidebar"] {
             background-color: #161a23;
+        }
+        .stSelectbox label {
+            color: #FFA500 !important;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .stCodeBlock {
+            border-radius: 8px;
+        }
+        .sql-container {
+            background: #161a23;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .stDataFrame {
+            border-radius: 8px;
         }
     </style>
     """,
     unsafe_allow_html=True
 )
 
+# Load data
 df = pd.read_csv("billionaire/billionaire.csv")
 
-# Initialize session state properly
+# Initialize session state
 if "place" not in st.session_state:
     st.session_state["place"] = queries.DROPDOWN_QUERY[0]
 
@@ -36,44 +59,53 @@ def update_selection():
     """Update session state when selectbox value changes."""
     st.session_state["place"] = st.session_state["query_select"]
 
-def get_place():
-
-    st.title(":orange[SQL PROJECTS COMPILATION]")
+# Sidebar Navigation
+with st.sidebar:
+    st.header(":orange[SQL Queries]")
+    st.write("Choose a SQL query to execute and analyze its results.")
     
-    st.write("")
     st.selectbox(
-        ":orange[Select a query from the dropdown list]", 
-        options=queries.DROPDOWN_QUERY,  # Add some options
+        "Select a query", 
+        options=queries.DROPDOWN_QUERY,  
         index=queries.DROPDOWN_QUERY.index(st.session_state["place"]),
         key="query_select",
-        on_change=update_selection # This will trigger get_place() when the selection changes
+        on_change=update_selection
     )
-    
 
-    selected_query = st.session_state["place"]+ "_QUERY"
-    selected_problem = st.session_state["place"]+ "_PROBLEM"
+def display_sql_project():
+    st.title(":orange[SQL Projects Compilation] :bar_chart:")
+
+    selected_query = st.session_state["place"] + "_QUERY"
+    selected_problem = st.session_state["place"] + "_PROBLEM"
+
     try:
         query = getattr(queries, selected_query)
         sql_problem = getattr(problems, selected_problem)
     except AttributeError:
         st.error(f"Query {selected_query} does not exist in queries.")
-    
+        return
+
     result = sqldf(query)
 
-    st.write("")
-    st.write("")
-    st.subheader("SQL PROBLEM", divider="green")
-    st.code(sql_problem, language="sql")
+    # Display SQL Problem
+    with st.container():
+        st.markdown('<div class="sql-container">', unsafe_allow_html=True)
+        st.subheader(":green[SQL Problem]")
+        st.code(sql_problem, language="sql")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    st.subheader("SQL CODE", divider="orange")
-    st.code(query, language="sql", line_numbers=True, wrap_lines=True)
+    # Display SQL Code
+    with st.container():
+        st.markdown('<div class="sql-container">', unsafe_allow_html=True)
+        st.subheader(":orange[SQL Code]")
+        st.code(query, language="sql", line_numbers=True, wrap_lines=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    st.subheader("RESULT", divider="rainbow")
-    st.table(result)
-    return
+    # Display Query Results
+    with st.container():
+        st.markdown('<div class="sql-container">', unsafe_allow_html=True)
+        st.subheader(":blue[Query Results]")
+        st.dataframe(result, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-
-get_place()
-
-
-
+display_sql_project()
