@@ -96,7 +96,7 @@ COUNTRY_WISE_DISTRIBUTION_QUERY = """
 WITH CountriesOfBillionaires AS 
     (SELECT 
             country,
-            COUNT(*) AS count,
+            COUNT(*) AS 'Number of Billionaires',
             SUM(finalWorth) AS totalWorth
         FROM 
             df
