@@ -175,12 +175,98 @@ UNION ALL
 SELECT * FROM FemaleBillionaires;
 """
 
-SOURCE_OF_WEALTH_QUERY = SAMPLE_QUERY
+SOURCE_OF_WEALTH_QUERY = """
+WITH SourceOfWealth AS
+    (
+    SELECT
+        source,
+        COUNT(*) AS NumberOfBillionaires,
+        SUM(finalWorth) AS TotalNetWorth
+        FROM df
+        GROUP BY source
+        ORDER BY TotalNetWorth DESC
+    )
+SELECT * FROM SourceOfWealth;
+"""
 
-BIRTH_YEAR_ANALYSIS_QUERY = SAMPLE_QUERY
+BIRTH_YEAR_ANALYSIS_QUERY = """
+SELECT
+    CAST(1900 + CAST(substr(birthDate, -8, 2) AS INTEGER) AS TEXT) AS birthYear,
+    COUNT(*) AS NumberOfBillionaires
+    FROM df
+    GROUP BY birthYear
+    ORDER BY NumberOfBillionaires DESC;
+"""
 
-CITY_WISE_DISTRIBUTION_QUERY = SAMPLE_QUERY
+CITY_WISE_DISTRIBUTION_QUERY = """
+SELECT
+    city,
+    COUNT(*) AS NumberOfBillionaires,
+    SUM(finalWorth) AS TotalNetWorth
+    FROM df
+    GROUP BY city
+    ORDER BY NumberOfBillionaires DESC, TotalNetWorth DESC;
+"""
 
 NET_WORTH_GROWTH_QUERY = SAMPLE_QUERY
 
-LIFE_EXPECTANCY_AND_WEALTH_CORRELATION_QUERY = SAMPLE_QUERY
+LIFE_EXPECTANCY_AND_WEALTH_CORRELATION_QUERY = """
+WITH LifeMedianStats AS
+    (
+    SELECT
+        '-' AS country,
+        'Median Life Expectancy' AS metric,
+        life_expectancy_country AS AverageLifeExpectancy,
+        CAST(AVG(finalWorth) AS DECIMAL(10,2)) AS AverageNetWorth,
+        COUNT(*) AS MedianCount
+        FROM df
+        GROUP BY life_expectancy_country
+        ORDER BY MedianCount DESC
+        LIMIT 1
+    ),
+
+NetWorthBelowMedian AS
+    (
+    SELECT
+        '-' AS country,
+        'Below Median Life Expectancy' AS metric,
+        CAST(AVG(life_expectancy_country) AS DECIMAL(10,2)) AS AverageLifeExpectancy,
+        CAST(AVG(finalWorth) AS DECIMAL(10,2)) AS AverageNetWorth,
+        '-' AS MedianCount
+        FROM df
+        WHERE life_expectancy_country < (SELECT AverageLifeExpectancy FROM LifeMedianStats) 
+    ),
+
+NetWorthAboveMedian AS
+    (
+    SELECT
+        '-' AS country,
+        'Above Median Life Expectancy' AS metric,
+        CAST(AVG(life_expectancy_country) AS DECIMAL(10,2)) AS AverageLifeExpectancy,
+        CAST(AVG(finalWorth) AS DECIMAL(10,2)) AS AverageNetWorth,
+        '-' AS MedianCount
+        FROM df
+        WHERE life_expectancy_country > (SELECT AverageLifeExpectancy FROM LifeMedianStats)
+    ),
+
+LifeExpectancyStats AS
+    (
+    SELECT
+        country,
+        '-' AS metric,
+        CAST(AVG(life_expectancy_country) AS DECIMAL(10,2)) AS AverageLifeExpectancy,
+        CAST(AVG(finalWorth) AS DECIMAL(10,2)) AS AverageNetWorth,
+        '-' AS MedianCount
+        FROM df
+        GROUP BY country
+        ORDER BY AverageLifeExpectancy DESC, AverageNetWorth DESC
+    )
+
+SELECT * FROM LifeMedianStats
+UNION ALL
+SELECT * FROM NetWorthBelowMedian
+UNION ALL
+SELECT * FROM NetWorthAboveMedian
+UNION ALL
+SELECT * FROM LifeExpectancyStats;
+"""
