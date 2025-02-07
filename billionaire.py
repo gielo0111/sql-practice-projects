@@ -29,11 +29,6 @@ st.markdown(
             padding: 20px;
         }
 
-        /* Remove Sidebar */
-        div[data-testid="stSidebar"] {
-            display: none;
-        }
-
         /* Dropdown Styling */
         .stSelectbox label {
             color: #FF1493 !important; /* Pink color */
@@ -51,16 +46,6 @@ st.markdown(
 
         .stSelectbox:hover {
             background-color: #555;
-        }
-
-        /* Code Block Styling */
-        .stCodeBlock {
-            border-radius: 12px;
-            background-color: #1D1D1D !important;
-            font-size: 14px;
-            padding: 20px;
-            border: 1px solid #444;
-            color: #FF1493; /* Pink code block */
         }
 
         /* SQL Container Styling */
