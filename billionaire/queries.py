@@ -218,10 +218,10 @@ WITH LifeMedianStats AS
         'Median Life Expectancy' AS metric,
         life_expectancy_country AS AverageLifeExpectancy,
         CAST(AVG(finalWorth) AS DECIMAL(10,2)) AS AverageNetWorth,
-        COUNT(*) AS MedianCount
+        COUNT(*) AS Count
         FROM df
         GROUP BY life_expectancy_country
-        ORDER BY MedianCount DESC
+        ORDER BY Count DESC
         LIMIT 1
     ),
 
@@ -232,7 +232,7 @@ NetWorthBelowMedian AS
         'Below Median Life Expectancy' AS metric,
         CAST(AVG(life_expectancy_country) AS DECIMAL(10,2)) AS AverageLifeExpectancy,
         CAST(AVG(finalWorth) AS DECIMAL(10,2)) AS AverageNetWorth,
-        '-' AS MedianCount
+        COUNT(*) AS Count
         FROM df
         WHERE life_expectancy_country < (SELECT AverageLifeExpectancy FROM LifeMedianStats) 
     ),
@@ -244,7 +244,7 @@ NetWorthAboveMedian AS
         'Above Median Life Expectancy' AS metric,
         CAST(AVG(life_expectancy_country) AS DECIMAL(10,2)) AS AverageLifeExpectancy,
         CAST(AVG(finalWorth) AS DECIMAL(10,2)) AS AverageNetWorth,
-        '-' AS MedianCount
+        COUNT(*) AS Count
         FROM df
         WHERE life_expectancy_country > (SELECT AverageLifeExpectancy FROM LifeMedianStats)
     ),
@@ -256,7 +256,7 @@ LifeExpectancyStats AS
         '-' AS metric,
         CAST(AVG(life_expectancy_country) AS DECIMAL(10,2)) AS AverageLifeExpectancy,
         CAST(AVG(finalWorth) AS DECIMAL(10,2)) AS AverageNetWorth,
-        '-' AS MedianCount
+        COUNT(*) AS Count
         FROM df
         GROUP BY country
         ORDER BY AverageLifeExpectancy DESC, AverageNetWorth DESC
