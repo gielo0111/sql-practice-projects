@@ -113,7 +113,7 @@ WITH SelfMadeVsInherited AS
             ELSE 'Inherited'
         END AS SelfMadeOrNot,
         AVG(finalWorth) AS avgNetWorth,
-        CONCAT(ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2), '%') AS PercentageOfBillionaires,
+        ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) || '%' AS PercentageOfBillionaires,
         SUM(finalWorth) AS totalNetWorth
         FROM df
         GROUP BY selfMade
