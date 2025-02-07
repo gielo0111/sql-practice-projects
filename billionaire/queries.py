@@ -134,23 +134,8 @@ WITH GenderStats AS
         CAST(AVG(finalWorth) AS DECIMAL(10,2)) AS AveNetWorth
         FROM df
         GROUP BY gender
+        ORDER BY gender DESC
     ),
-
-FemaleBillionaires AS
-(
-    SELECT
-        gender,
-        '-' AS metric,
-        ROW_NUMBER() OVER () AS RankOrValue,
-        personName,
-        industries,
-        finalWorth AS NetWorth,
-        '-' AS AveNetWorth
-        FROM df
-        WHERE gender='F'
-        ORDER BY NetWorth DESC
-        Limit 5
-),
 
 MaleBillionaires AS
 (
@@ -166,12 +151,28 @@ MaleBillionaires AS
         WHERE gender='M'
         ORDER BY NetWorth DESC
         LIMIT 5
+),
+
+FemaleBillionaires AS
+(
+    SELECT
+        gender,
+        '-' AS metric,
+        ROW_NUMBER() OVER () AS RankOrValue,
+        personName,
+        industries,
+        finalWorth AS NetWorth,
+        '-' AS AveNetWorth
+        FROM df
+        WHERE gender='F'
+        ORDER BY NetWorth DESC
+        Limit 5
 )
 SELECT * FROM GenderStats
 UNION ALL
-SELECT * FROM FemaleBillionaires
+SELECT * FROM MaleBillionaires
 UNION ALL
-SELECT * FROM MaleBillionaires;
+SELECT * FROM FemaleBillionaires;
 """
 
 SOURCE_OF_WEALTH_QUERY = SAMPLE_QUERY
