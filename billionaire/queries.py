@@ -10,7 +10,6 @@ DROPDOWN_QUERY = [
     "CITY_WISE_DISTRIBUTION",
     "NET_WORTH_GROWTH",
     "LIFE_EXPECTANCY_AND_WEALTH_CORRELATION",
-    "TOP_BY_INDUSTRY_2",
     ];
 
 SAMPLE_QUERY = """
@@ -106,9 +105,74 @@ WITH CountriesOfBillionaires AS
 SELECT * FROM CountriesOfBillionaires;
 """
 
-SELF_MADE_VS_INHERITED_WEALTH_QUERY = SAMPLE_QUERY
+SELF_MADE_VS_INHERITED_WEALTH_QUERY = """
+WITH SelfMadeVsInherited AS 
+    (SELECT
+        CASE
+            WHEN selfMade = 1 THEN 'Self-Made'
+            ELSE 'Inherited'
+        END AS SelfMadeOrNot,
+        AVG(finalWorth) AS avgNetWorth,
+        CONCAT(ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2), '%') AS PercentageOfBillionaires,
+        SUM(finalWorth) AS totalNetWorth
+        FROM df
+        GROUP BY selfMade
+        )
+SELECT * FROM SelfMadeVsInherited;
+"""
 
-GENDER_ANALYSIS_QUERY = SAMPLE_QUERY
+GENDER_ANALYSIS_QUERY = """
+WITH GenderStats AS
+    (
+    SELECT
+        gender,
+        '# of Billionaires' AS metric,
+        COUNT(*) AS RankOrValue,
+        '-' AS personName,
+        '-' AS industries,
+        '-' AS NetWorth,
+        CAST(AVG(finalWorth) AS DECIMAL(10,2)) AS AveNetWorth
+        FROM df
+        GROUP BY gender
+    ),
+
+FemaleBillionaires AS
+(
+    SELECT
+        gender,
+        '-' AS metric,
+        ROW_NUMBER() OVER () AS RankOrValue,
+        personName,
+        industries,
+        finalWorth AS NetWorth,
+        '-' AS AveNetWorth
+        FROM df
+        WHERE gender='F'
+        ORDER BY NetWorth DESC
+        Limit 5
+),
+
+MaleBillionaires AS
+(
+    SELECT
+        gender,
+        '-' AS metric,
+        ROW_NUMBER() OVER () AS RankOrValue,
+        personName,
+        industries,
+        finalWorth AS NetWorth,
+        '-' AS AveNetWorth
+        FROM df
+        WHERE gender='M'
+        ORDER BY NetWorth DESC
+        LIMIT 5
+)
+SELECT * FROM GenderStats
+UNION ALL
+SELECT * FROM FemaleBillionaires
+UNION ALL
+SELECT * FROM MaleBillionaires;
+"""
 
 SOURCE_OF_WEALTH_QUERY = SAMPLE_QUERY
 
