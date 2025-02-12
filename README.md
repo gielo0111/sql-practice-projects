@@ -1,4 +1,7 @@
 # sql-practice-projects
+
+Deployed at https://gielofernandez-sql-project.streamlit.app/
+
 SQL practice projects with the use of other language(python, etc.)
 
 Download Python here for windows https://www.python.org/downloads/
