@@ -28,3 +28,7 @@ for i in range(0, len(text) - SEQ_LENGTH, STEP_SIZE):
     next_characters.append(text[i+SEQ_LENGTH]))
 
 x = np.zeros(len(sentences), SEQ_LENGTH, len(characters), dtype=np.bool)
+
+y = np.zeros(len(sentences), len(sentences), dtype=np.bool)
+
+for i in sentences
