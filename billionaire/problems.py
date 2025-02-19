@@ -4,6 +4,10 @@ Complete Data of billionaire.csv
 Select from the dropdown ABOVE to view other SQL Queries.
 """
 
+KIT_PROBLEM = """
+text
+"""
+
 TOP_BY_INDUSTRY_PROBLEM = """
 Top Billionaires by Industry
 •	Objective: Identify the top billionaires in each industry.
